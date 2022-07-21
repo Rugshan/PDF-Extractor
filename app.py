@@ -4,7 +4,7 @@ import tkinter as tk
 import PyPDF2
 from PIL import Image, ImageTk
 from tkinter.filedialog import askopenfile
-from functions import display_logo, display_textbox
+from functions import display_logo, display_textbox, display_icon
 
 root = tk.Tk()
 root.geometry('+%d+%d' % (600, 300))
@@ -14,11 +14,23 @@ root.title("PDF Extractor Tool")
 header = tk.Frame(root, width=800, height=220, bg="white")
 header.grid(columnspan=3, rowspan=2, row=0)
 
-# Navigation Menu: Copy Text, Cycle Images, Save Image(s)
+# Image Navigation
+image_navigation_menu = tk.Frame(root, width=800, height=60, bg="grey")
+image_navigation_menu.grid(columnspan=3, rowspan=1, row=2)
+
+#
+display_icon("resources/left_arrow.png", 2, 0, "E")
+display_icon("resources/right_arrow.png", 2, 2, "W")
+
+# Image Count
+what_image = tk.Label(root, text="image X of Y", font=("AndaleMono", 10))
+what_image.grid(row=2, column=1)
+
+# Save Menu: Copy Text, Cycle Images, Save Image(s)
 save_menu = tk.Frame(root, width=800, height=60, bg="grey")
 save_menu.grid(columnspan=3, rowspan=1, row=3)
 
-# Buttons
+# Save Buttons
 copy_text_btn = tk.Button(root, text="Copy Text", font=("AndaleMono", 10), height=1, width=15)
 copy_text_btn.grid(row=3, column=0)
 
