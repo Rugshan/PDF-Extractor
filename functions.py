@@ -20,7 +20,7 @@ def display_logo(filepath, row, column):
 
 
 # Display Logo
-def display_icon(filepath, row, column, sticky):
+def display_icon(filepath, row, column, sticky, command):
     # Get image file.
     icon = Image.open(filepath)
 
@@ -31,7 +31,7 @@ def display_icon(filepath, row, column, sticky):
     icon = ImageTk.PhotoImage(icon)
 
     # Convert to Label Widget
-    icon_label = tk.Button(image=icon, width=25, height=25)
+    icon_label = tk.Button(image=icon, width=25, height=25, command=command)
     icon_label.image = icon
     icon_label.grid(column=column, row=row, sticky=sticky)
 
