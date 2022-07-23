@@ -38,7 +38,7 @@ def display_icon(filepath, row, column, sticky):
 
 # Display Textbox
 def display_textbox(content, row, column, root):
-    text_box = tk.Text(root, height=10, width=10, padx=10, pady=10)
+    text_box = tk.Text(root, height=8, width=30, padx=10, pady=10)
     text_box.insert(1.0, content)
     text_box.tag_config("center", justify="center")
     text_box.tag_add("center", 1.0, "end")
@@ -64,6 +64,7 @@ def extract_images(page):
                     mode = "CMYK"
 
                 img = Image.frombytes(mode, size, data)
+                img = img.convert('RGB')
                 images.append(img)
     return images
 

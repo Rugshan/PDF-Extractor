@@ -5,6 +5,7 @@ import PyPDF2
 from PIL import Image, ImageTk
 from tkinter.filedialog import askopenfile
 from functions import display_logo, display_textbox, display_icon, extract_images, display_images, resize_image
+from os import mkdir, path, getcwd
 
 # Global Variable(s)
 page_contents = []
@@ -19,7 +20,12 @@ def copy_text(content):
 
 # Save All Images
 def save_all(images):
+    save_dir = path.join(getcwd(), 'saved_images')
+    if not path.isdir(save_dir):
+        mkdir(save_dir)
+
     counter = 1
+
     for i in images:
         i.save("saved_images/img" + str(counter) + ".png", format="png")
         counter += 1
@@ -80,7 +86,8 @@ def open_file():
     display_icon("resources/right_arrow.png", 2, 2, "W")
 
     # Image Count
-    what_image = tk.Label(root, text="image X of Y", font=("AndaleMono", 10))
+    what_image_text = "Image " + str(1) + " of " + str(len(all_images))
+    what_image = tk.Label(root, text=what_image_text, font=("AndaleMono", 10))
     what_image.grid(row=2, column=1)
 
     # Save Menu: Copy Text, Cycle Images, Save Image(s)
