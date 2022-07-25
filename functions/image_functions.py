@@ -1,11 +1,13 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from os import mkdir, path, getcwd
+import io
 
 
 # From Stack Overflow https://stackoverflow.com/questions/2693820/extract-images-from-pdf-without-resampling-in-python
 def extract_images(page):
     images = []  # Array for images.
+
     if '/XObject' in page['/Resources']:
         xObject = page['/Resources']['/XObject'].getObject()
 
@@ -14,16 +16,23 @@ def extract_images(page):
             if xObject[obj]['/Subtype'] == '/Image':
                 size = (xObject[obj]['/Width'], xObject[obj]['/Height'])
                 data = xObject[obj].getData()
-                mode = ""
 
-                if xObject[obj]['/ColorSpace'] == 'DeviceRGB':
+                if xObject[obj]['/ColorSpace'] == '/DeviceRGB':
                     mode = "RGB"
                 else:
                     mode = "CMYK"
-
+                    print("mode 2 " + str(xObject[obj]['/ColorSpace']))
                 img = Image.frombytes(mode, size, data)
                 img = img.convert('RGB')
                 images.append(img)
+
+    else:
+        img = Image.open(fp="resources/image_not_found.png", mode='r', formats=None)
+        img = img.convert('RGB')
+        # print('else')
+        # img = Image.new("RGB", (100, 100), (255, 255, 255))
+        images.append(img)
+
     return images
 
 
