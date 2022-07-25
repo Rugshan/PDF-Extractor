@@ -1,44 +1,16 @@
 # Imports
-import tkinter
 import tkinter as tk
 import PyPDF2
-from PIL import Image, ImageTk
 from tkinter.filedialog import askopenfile
-from functions import display_logo, display_textbox, display_icon, extract_images, display_images, resize_image
-from os import mkdir, path, getcwd
+from functions.display_functions import display_logo, display_icon
+from functions.image_functions import extract_images, display_images, save_image, save_all
+from functions.text_functions import copy_text, display_textbox
 
 # Global Variable(s)
 page_contents = []
 all_images = []
 image_idx = [0]
 displayed_image = []
-
-
-# Copy Text
-def copy_text(content):
-    root.clipboard_clear()
-    root.clipboard_append(content[-1])
-
-
-def check_directory(dir_name):
-    save_dir = path.join(getcwd(), dir_name)
-    if not path.isdir(save_dir):
-        mkdir(save_dir)
-
-
-# Save All Images
-def save_all(images):
-    check_directory('saved_images')
-    counter = 1
-
-    for i in images:
-        i.save("saved_images/img" + str(counter) + ".png", format="png")
-        counter += 1
-
-
-def save_image(image):
-    check_directory('saved_images')
-    image.save("saved_images/img" + str(image_idx[-1]) + ".png", format="png")
 
 
 def right_arrow(images, current_image, what_image_text):
@@ -164,7 +136,8 @@ def open_file():
     save_menu.grid(columnspan=3, rowspan=1, row=3)
 
     # Save Buttons
-    copy_text_btn = tk.Button(root, text="Copy Text", command=lambda: copy_text(page_contents), font=("AndaleMono", 10),
+    copy_text_btn = tk.Button(root, text="Copy Text", command=lambda: copy_text(root, page_contents),
+                              font=("AndaleMono", 10),
                               height=1, width=15)
     copy_text_btn.grid(row=3, column=0)
 
@@ -173,7 +146,7 @@ def open_file():
                              height=1, width=15)
     save_all_btn.grid(row=3, column=1)
 
-    save_btn = tk.Button(root, text="Save Image", command=lambda: save_image(all_images[image_idx[-1]]),
+    save_btn = tk.Button(root, text="Save Image", command=lambda: save_image(all_images[image_idx[-1]], image_idx[-1]),
                          font=("AndaleMono", 10), height=1, width=15)
     save_btn.grid(row=3, column=2)
 

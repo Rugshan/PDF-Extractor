@@ -1,48 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-
-
-# Display Logo
-def display_logo(filepath, row, column):
-    # Get image file.
-    image = Image.open(filepath)
-
-    # Resize Image
-    image = image.resize((int(image.size[0] / 1.5), int(image.size[1] / 1.5)))
-
-    # Convert to Tkinter Image
-    image = ImageTk.PhotoImage(image)
-
-    # Convert to Label Widget
-    image_label = tk.Label(image=image, bg="white")
-    image_label.image = image
-    image_label.grid(column=column, row=row, rowspan=2, padx=20, pady=40)
-
-
-# Display Logo
-def display_icon(filepath, row, column, sticky, command):
-    # Get image file.
-    icon = Image.open(filepath)
-
-    # Resize Image
-    icon = icon.resize((20, 20))
-
-    # Convert to Tkinter Image
-    icon = ImageTk.PhotoImage(icon)
-
-    # Convert to Label Widget
-    icon_label = tk.Button(image=icon, width=25, height=25, command=command)
-    icon_label.image = icon
-    icon_label.grid(column=column, row=row, sticky=sticky)
-
-
-# Display Textbox
-def display_textbox(content, row, column, root):
-    text_box = tk.Text(root, height=8, width=30, padx=10, pady=10)
-    text_box.insert(1.0, content)
-    text_box.tag_config("center", justify="center")
-    text_box.tag_add("center", 1.0, "end")
-    text_box.grid(column=column, row=row, sticky="SW", padx=25, pady=25)
+from os import mkdir, path, getcwd
 
 
 # From Stack Overflow https://stackoverflow.com/questions/2693820/extract-images-from-pdf-without-resampling-in-python
@@ -100,3 +58,24 @@ def display_images(img):
     image_label.image = img
     image_label.grid(row=4, column=2, rowspan=2)
     return image_label
+
+
+def check_directory(dir_name):
+    save_dir = path.join(getcwd(), dir_name)
+    if not path.isdir(save_dir):
+        mkdir(save_dir)
+
+
+def save_image(image, idx):
+    check_directory('saved_images')
+    image.save("saved_images/img" + str(idx) + ".png", format="png")
+
+
+# Save All Images
+def save_all(images):
+    check_directory('saved_images')
+    counter = 1
+
+    for i in images:
+        i.save("saved_images/img" + str(counter) + ".png", format="png")
+        counter += 1
