@@ -1,7 +1,9 @@
 import tkinter as tk
+import zlib
+
 from PIL import Image, ImageTk
 from os import mkdir, path, getcwd
-import io
+from PyPDF2 import generic
 
 
 # From Stack Overflow https://stackoverflow.com/questions/2693820/extract-images-from-pdf-without-resampling-in-python
@@ -14,14 +16,35 @@ def extract_images(page):
         # Fetch all images from the PDF.
         for obj in xObject:
             if xObject[obj]['/Subtype'] == '/Image':
-                size = (xObject[obj]['/Width'], xObject[obj]['/Height'])
-                data = xObject[obj].getData()
 
-                if xObject[obj]['/ColorSpace'] == '/DeviceRGB':
+                color_space = xObject[obj]['/ColorSpace']
+
+                if color_space == '/DeviceRGB':
                     mode = "RGB"
-                else:
+                elif color_space == '/DeviceCMYK':
                     mode = "CMYK"
-                    print("mode 2 " + str(xObject[obj]['/ColorSpace']))
+                elif color_space == '/DeviceGray':
+                    mode = "P"
+
+                if isinstance(color_space, generic.ArrayObject) and color_space[0] == '/ICCBased':
+                    color_map = xObject[obj]['/ColorSpace'][1].getObject()['/N']
+                    if color_map == 1:
+                        mode = "P"
+                    elif color_map == 3:
+                        mode = "RGB"
+                    elif color_map == 4:
+                        mode = "CMYK"
+
+                sub_obj = xObject[obj]
+
+                zlib_compressed = '/FlateDecode' in sub_obj.get('/Filter', '')
+                if zlib_compressed:
+                    sub_obj._data = zlib.decompress(sub_obj._data)
+
+                size = (xObject[obj]['/Width'], xObject[obj]['/Height'])
+
+                data = sub_obj._data #.getData()
+
                 img = Image.frombytes(mode, size, data)
                 img = img.convert('RGB')
                 images.append(img)
@@ -29,8 +52,6 @@ def extract_images(page):
     else:
         img = Image.open(fp="resources/image_not_found.png", mode='r', formats=None)
         img = img.convert('RGB')
-        # print('else')
-        # img = Image.new("RGB", (100, 100), (255, 255, 255))
         images.append(img)
 
     return images
